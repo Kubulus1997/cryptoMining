@@ -35,6 +35,7 @@ class GpuController extends Controller
      */
     public function actionIndex()
     {
+
         $searchModel = new gpuSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

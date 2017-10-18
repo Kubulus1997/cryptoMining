@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\models\RoundsQuery;
 use Yii;
 use common\models\Rounds;
 use common\models\RoundsSearch;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -40,7 +42,7 @@ class RoundsController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/currentStats",
+            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/rounds",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -58,9 +60,11 @@ class RoundsController extends Controller
         $response = ArrayHelper::toArray($response);
         $array = ArrayHelper::getValue($response,'data');
         foreach ($array as $round){
+            $find = false;
             $block = ArrayHelper::getValue($round,'block');
-            $find = RoundsSearch::find()->where('block' == $block)->one();
-            if ($find !== null){
+            $find = Rounds::find()->where(['block_number' => $block])->exists();
+
+            if ($find == null){
                 $model = new Rounds();
                 $model->block_number = $block;
                 $amount = ArrayHelper::getValue($round, 'amount');
