@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\PayOuts */
+/* @var $model common\models\Payouts */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="pay-outs-form">
+<div class="payouts-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

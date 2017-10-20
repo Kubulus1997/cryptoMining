@@ -14,7 +14,7 @@ use Yii;
  * @property string $tx_hash
  * @property string $paid_on
  */
-class PayOuts extends \yii\db\ActiveRecord
+class Payouts extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -55,10 +55,10 @@ class PayOuts extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return PayOutsQuery the active query used by this AR class.
+     * @return PayoutsQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new PayOutsQuery(get_called_class());
+        return new PayoutsQuery(get_called_class());
     }
 }

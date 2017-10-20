@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\PayOutsQuery */
+/* @var $model common\models\PayoutsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="pay-outs-search">
+<div class="payouts-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],

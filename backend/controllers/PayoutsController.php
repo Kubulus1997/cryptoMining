@@ -2,15 +2,16 @@
 
 namespace backend\controllers;
 
+use common\models\PayoutsQuery;
 use Yii;
-use common\models\PayOuts;
-use common\models\PayOutsQuery;
+use common\models\Payouts;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
- * PayoutsController implements the CRUD actions for PayOuts model.
+ * PayoutsController implements the CRUD actions for Payouts model.
  */
 class PayoutsController extends Controller
 {
@@ -30,12 +31,50 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Lists all PayOuts models.
+     * Lists all Payouts models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new PayOutsQuery();
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/payouts",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+        $response = json_decode($response, true);
+        $response = ArrayHelper::toArray($response);
+        $array = ArrayHelper::getValue($response,'data');
+
+        foreach ($array as $payOut){
+            $find = false;
+            $trxHash = ArrayHelper::getValue($payOut,'txHash');
+            $find = Payouts::find()->where(['tx_hash' => $trxHash])->exists();
+
+            if ($find == null){
+                $model = new Payouts();
+                $model->tx_hash = $trxHash;
+                $model->start_block = ArrayHelper::getValue($payOut, 'start');
+                $model->end_block = ArrayHelper::getValue($payOut, 'end');
+                $model->amount = ArrayHelper::getValue($payOut, 'amount');
+                $model->paid_on = ArrayHelper::getValue($payOut, 'paidOn');
+                $model->save();
+            }
+        }
+
+        $searchModel = new PayoutsQuery();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +84,7 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Displays a single PayOuts model.
+     * Displays a single Payouts model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +96,13 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Creates a new PayOuts model.
+     * Creates a new Payouts model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new PayOuts();
+        $model = new Payouts();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -75,7 +114,7 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Updates an existing PayOuts model.
+     * Updates an existing Payouts model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +133,7 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Deletes an existing PayOuts model.
+     * Deletes an existing Payouts model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +146,15 @@ class PayoutsController extends Controller
     }
 
     /**
-     * Finds the PayOuts model based on its primary key value.
+     * Finds the Payouts model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return PayOuts the loaded model
+     * @return Payouts the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = PayOuts::findOne($id)) !== null) {
+        if (($model = Payouts::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

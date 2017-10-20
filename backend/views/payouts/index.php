@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\PayOutsQuery */
+/* @var $searchModel common\models\PayoutsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Pay Outs';
+$this->title = 'Payouts';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="pay-outs-index">
+<div class="payouts-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Pay Outs', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Payouts', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,

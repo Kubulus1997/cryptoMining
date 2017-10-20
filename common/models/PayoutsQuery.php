@@ -3,11 +3,11 @@
 namespace common\models;
 
 /**
- * This is the ActiveQuery class for [[PayOuts]].
+ * This is the ActiveQuery class for [[Payouts]].
  *
- * @see PayOuts
+ * @see Payouts
  */
-class PayOutsQuery extends \yii\db\ActiveQuery
+class PayoutsQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class PayOutsQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return PayOuts[]|array
+     * @return Payouts[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class PayOutsQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return PayOuts|array|null
+     * @return Payouts|array|null
      */
     public function one($db = null)
     {
