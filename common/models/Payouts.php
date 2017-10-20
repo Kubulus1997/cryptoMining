@@ -30,8 +30,8 @@ class Payouts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'start_block', 'end_block', 'amount', 'tx_hash'], 'required'],
-            [['id', 'start_block', 'end_block', 'amount'], 'integer'],
+            [['start_block', 'end_block', 'amount', 'tx_hash'], 'required'],
+            [['start_block', 'end_block', 'amount'], 'integer'],
             [['paid_on'], 'safe'],
             [['tx_hash'], 'string', 'max' => 255],
             [['tx_hash'], 'unique'],

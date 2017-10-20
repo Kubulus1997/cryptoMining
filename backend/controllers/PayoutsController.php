@@ -3,12 +3,14 @@
 namespace backend\controllers;
 
 use common\models\PayoutsQuery;
+use common\models\PayoutsSearch;
 use Yii;
 use common\models\Payouts;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\i18n\Formatter;
 
 /**
  * PayoutsController implements the CRUD actions for Payouts model.
@@ -69,12 +71,14 @@ class PayoutsController extends Controller
                 $model->start_block = ArrayHelper::getValue($payOut, 'start');
                 $model->end_block = ArrayHelper::getValue($payOut, 'end');
                 $model->amount = ArrayHelper::getValue($payOut, 'amount');
-                $model->paid_on = ArrayHelper::getValue($payOut, 'paidOn');
+                $timeStamp = ArrayHelper::getValue($payOut, 'paidOn');
+                $timeStamp = Yii::$app->formatter->asDatetime($timeStamp, 'yyyy-MM-dd hh:mm');
+                $model->paid_on = $timeStamp;
                 $model->save();
             }
         }
 
-        $searchModel = new PayoutsQuery();
+        $searchModel = new PayoutsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
