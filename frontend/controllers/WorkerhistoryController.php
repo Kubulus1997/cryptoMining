@@ -2,18 +2,17 @@
 
 namespace frontend\controllers;
 
-use yii\helpers\ArrayHelper;
 use Yii;
-use frontend\models\Minerhistory;
-use frontend\models\MinerhistorySearch;
+use common\models\workerhistory;
+use common\models\workerhistorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * MinerhistoryController implements the CRUD actions for Minerhistory model.
+ * WorkerhistoryController implements the CRUD actions for workerhistory model.
  */
-class MinerhistoryController extends Controller
+class WorkerhistoryController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,56 +30,12 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Lists all Minerhistory models.
+     * Lists all workerhistory models.
      * @return mixed
      */
     public function actionIndex()
     {
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/history",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "cache-control: no-cache"
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-        $response = json_decode($response, true);
-        $response = ArrayHelper::toArray($response);
-        $array = ArrayHelper::getValue($response,'data');
-
-        foreach ($array as $history){
-            $time = ArrayHelper::getValue($history,'time');
-            $time = date('Y-m-d H:i:s', $time);
-            $find = Minerhistory::find()->where(['time' => $time])->exists();
-
-            if ($find == null){
-                $model = new Minerhistory();
-
-                $model->time = $time;
-                $hashRate = ArrayHelper::getValue($history,'currentHashrate');
-                $model->current_hashrate = (int)$hashRate;
-                $model->valid_shares = ArrayHelper::getValue($history,'validShares');
-                $model->invalid_shares = ArrayHelper::getValue($history,'invalidShares');
-                $model->stale_shares = ArrayHelper::getValue($history,'staleShares');
-                $averageHashrate = ArrayHelper::getValue($history,'averageHashrate');
-                $model->average_hashrate = (int)$averageHashrate;
-                $model->active_workers = ArrayHelper::getValue($history,'activeWorkers');
-                $model->save();
-
-            }
-        }
-
-        $searchModel = new MinerhistorySearch();
+        $searchModel = new workerhistorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -90,7 +45,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Displays a single Minerhistory model.
+     * Displays a single workerhistory model.
      * @param integer $id
      * @return mixed
      */
@@ -102,13 +57,13 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Creates a new Minerhistory model.
+     * Creates a new workerhistory model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Minerhistory();
+        $model = new workerhistory();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -120,7 +75,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Updates an existing Minerhistory model.
+     * Updates an existing workerhistory model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -139,7 +94,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Deletes an existing Minerhistory model.
+     * Deletes an existing workerhistory model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -152,15 +107,15 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Finds the Minerhistory model based on its primary key value.
+     * Finds the workerhistory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Minerhistory the loaded model
+     * @return workerhistory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Minerhistory::findOne($id)) !== null) {
+        if (($model = workerhistory::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -8,6 +8,7 @@ use common\models\gpuSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * GpuController implements the CRUD actions for gpu model.
@@ -35,6 +36,36 @@ class GpuController extends Controller
      */
     public function actionIndex()
     {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/workers",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+        $response = json_decode($response, true);
+        $response = ArrayHelper::toArray($response);
+        $array = ArrayHelper::getValue($response,'data');
+
+        foreach ($array as $worker){
+            $gpuName = ArrayHelper::getValue($worker,'worker');
+            $find = gpu::find()->where(['gpu_name' => $gpuName ])->exists();
+            if ($find == false){
+                $model = new gpu;
+                $model->gpu_name = $gpuName;
+                $model->save();
+            }
+        }
 
         $searchModel = new gpuSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

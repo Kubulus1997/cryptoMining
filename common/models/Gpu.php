@@ -27,7 +27,7 @@ class gpu extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['member_id', 'gpu_name'], 'required'],
+            [['gpu_name'], 'required'],
             [['member_id'], 'integer'],
             [['gpu_name'], 'string', 'max' => 255],
             [['gpu_name'], 'unique'],
