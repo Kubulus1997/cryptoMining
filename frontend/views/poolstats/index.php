@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\workerhistorySearch */
+/* @var $searchModel common\models\PoolstatsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Workerhistories';
+$this->title = 'Poolstats';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="workerhistory-index">
+<div class="poolstats-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Workerhistory', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Poolstats', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -24,16 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'gpu_id',
-            'last_seen',
-            //'reported_hashrate',
-            'average_hashrate',
-            'current_hashrate',
-            'valid_shares',
-            'invalid_shares',
-            'stale_shares',
-
-            // 'id',
+            'block_number',
+            'miner:ntext',
+            'time',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Minerhistory */
+/* @var $model common\models\Transactions */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Minerhistories', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Transactions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="minerhistory-view">
+<div class="transactions-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,13 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'time',
+            'block_number',
+            'user_id',
             'current_hashrate',
-            'valid_shares',
-            'invalid_shares',
-            'stale_shares',
-            'average_hashrate',
-            'active_workers',
+            'amount',
+            'address',
+            'type:ntext',
+            'tx_hash:ntext',
+            'gpu_id',
         ],
     ]) ?>
 

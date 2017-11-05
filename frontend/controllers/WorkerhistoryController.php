@@ -2,9 +2,12 @@
 
 namespace frontend\controllers;
 
+use common\models\Gpu;
 use Yii;
-use common\models\workerhistory;
-use common\models\workerhistorySearch;
+use common\models\Workerhistory;
+use yii\helpers\ArrayHelper;
+use common\models\WorkerhistorySearch;
+use common\models\workerhistoryQuery;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,6 +38,57 @@ class WorkerhistoryController extends Controller
      */
     public function actionIndex()
     {
+        $workers = Gpu::find()->all();
+        foreach ($workers as $worker){
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/worker/" . $worker->gpu_name . "/history",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "cache-control: no-cache"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+            $response = json_decode($response, true);
+            $response = ArrayHelper::toArray($response);
+            $array = ArrayHelper::getValue($response,'data');
+            foreach ($array as $gpu){
+                $time = ArrayHelper::getValue($gpu, 'time');
+                $time = date('Y-m-d H:i:s', $time);
+                $find = Workerhistory::find()->where(['last_seen' => $time])->andWhere(['gpu_id' => $worker->id])->exists();
+
+                if ($find == false){
+                    $model = new workerhistory();
+                    $model->last_seen = $time;
+                    $averageHashrate = ArrayHelper::getValue($gpu, 'averageHashrate');
+                    $model ->average_hashrate = (int)$averageHashrate;
+                    $currentHashrate = ArrayHelper::getValue($gpu, 'currentHashrate');
+                    $model->current_hashrate = (int)$currentHashrate;
+                    $reportedHashrate = ArrayHelper::getValue($gpu, 'reportedHashrate');
+                    $model->reported_hashrate = (int)$reportedHashrate;
+                    $model->valid_shares = ArrayHelper::getValue($gpu,'validShares');
+                    $model->invalid_shares = ArrayHelper::getValue($gpu, 'invalidShares');
+                    $model->stale_shares = ArrayHelper::getValue($gpu, 'staleShares');
+                    $model->gpu_id = $worker->id;
+                    $model->save();
+                }
+            }
+
+
+        }
+
+
+
+
+
         $searchModel = new workerhistorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

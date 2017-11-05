@@ -3,11 +3,11 @@
 namespace common\models;
 
 /**
- * This is the ActiveQuery class for [[workerhistory]].
+ * This is the ActiveQuery class for [[Transactions]].
  *
- * @see workerhistory
+ * @see Transactions
  */
-class workerhistoryQuery extends \yii\db\ActiveQuery
+class TransactionsQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class workerhistoryQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return workerhistory[]|array
+     * @return Transactions[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class workerhistoryQuery extends \yii\db\ActiveQuery
 
     /**
      * @inheritdoc
-     * @return workerhistory|array|null
+     * @return Transactions|array|null
      */
     public function one($db = null)
     {

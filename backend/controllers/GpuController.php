@@ -3,8 +3,8 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\gpu;
-use common\models\gpuSearch;
+use common\models\Gpu;
+use common\models\GpuSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -59,7 +59,7 @@ class GpuController extends Controller
 
         foreach ($array as $worker){
             $gpuName = ArrayHelper::getValue($worker,'worker');
-            $find = gpu::find()->where(['gpu_name' => $gpuName ])->exists();
+            $find = Gpu::find()->where(['gpu_name' => $gpuName ])->exists();
             if ($find == false){
                 $model = new gpu;
                 $model->gpu_name = $gpuName;
@@ -67,7 +67,7 @@ class GpuController extends Controller
             }
         }
 
-        $searchModel = new gpuSearch();
+        $searchModel = new GpuSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

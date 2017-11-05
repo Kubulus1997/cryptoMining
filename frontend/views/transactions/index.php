@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\workerhistorySearch */
+/* @var $searchModel common\models\TransactionsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Workerhistories';
+$this->title = 'Transactions';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="workerhistory-index">
+<div class="transactions-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Workerhistory', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Transactions', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -24,16 +24,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'gpu_id',
-            'last_seen',
-            //'reported_hashrate',
-            'average_hashrate',
+            'id',
+            'block_number',
+            'user_id',
             'current_hashrate',
-            'valid_shares',
-            'invalid_shares',
-            'stale_shares',
-
-            // 'id',
+            'amount',
+            // 'address',
+            // 'type:ntext',
+            // 'tx_hash:ntext',
+            'gpu_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

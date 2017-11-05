@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use Yii;
 
@@ -32,8 +32,8 @@ class Minerhistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['time', 'current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'average_hashrate', 'active_workers'], 'required'],
             [['time'], 'safe'],
-            [['current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'average_hashrate', 'active_workers'], 'required'],
             [['current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'average_hashrate', 'active_workers'], 'integer'],
         ];
     }
@@ -57,7 +57,7 @@ class Minerhistory extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return MinerhistoryQuery the active query used by this AR class.
+     * @return MinerHistoryQuery the active query used by this AR class.
      */
     public static function find()
     {

@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\MinerhistorySearch */
+/* @var $model common\models\TransactionsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="minerhistory-search">
+<div class="transactions-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,19 +17,21 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'time') ?>
+    <?= $form->field($model, 'block_number') ?>
+
+    <?= $form->field($model, 'user_id') ?>
 
     <?= $form->field($model, 'current_hashrate') ?>
 
-    <?= $form->field($model, 'valid_shares') ?>
+    <?= $form->field($model, 'amount') ?>
 
-    <?= $form->field($model, 'invalid_shares') ?>
+    <?php // echo $form->field($model, 'address') ?>
 
-    <?php // echo $form->field($model, 'stale_shares') ?>
+    <?php // echo $form->field($model, 'type') ?>
 
-    <?php // echo $form->field($model, 'average_hashrate') ?>
+    <?php // echo $form->field($model, 'tx_hash') ?>
 
-    <?php // echo $form->field($model, 'active_workers') ?>
+    <?php // echo $form->field($model, 'gpu_id') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

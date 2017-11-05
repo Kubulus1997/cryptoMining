@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\MinerhistorySearch */
+/* @var $searchModel common\models\MinerhistorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Minerhistories';
@@ -24,13 +24,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            //'gpu_id',
             'time',
             'current_hashrate',
             'valid_shares',
             'invalid_shares',
-            // 'stale_shares',
-            // 'average_hashrate',
+
+            'stale_shares',
+            'average_hashrate',
             // 'active_workers',
 
             ['class' => 'yii\grid\ActionColumn'],

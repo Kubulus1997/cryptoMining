@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Minerhistory */
+/* @var $model common\models\Poolstats */
 
-$this->title = 'Create Minerhistory';
-$this->params['breadcrumbs'][] = ['label' => 'Minerhistories', 'url' => ['index']];
+$this->title = 'Create Poolstats';
+$this->params['breadcrumbs'][] = ['label' => 'Poolstats', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="minerhistory-create">
+<div class="poolstats-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

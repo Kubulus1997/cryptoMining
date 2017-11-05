@@ -2,18 +2,18 @@
 
 namespace frontend\controllers;
 
-use yii\helpers\ArrayHelper;
 use Yii;
-use common\models\Minerhistory;
-use common\models\MinerhistorySearch;
+use common\models\Poolstats;
+use common\models\PoolstatsSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * MinerhistoryController implements the CRUD actions for Minerhistory model.
+ * PoolstatsController implements the CRUD actions for Poolstats model.
  */
-class MinerhistoryController extends Controller
+class PoolstatsController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,16 +31,14 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Lists all Minerhistory models.
+     * Lists all Poolstats models.
      * @return mixed
      */
     public function actionIndex()
     {
-
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api-zcash.flypool.org/miner/t1MZ9MUkTBQ57x8Rx6AmED9gHD9tqFwHrTp/history",
+            CURLOPT_URL => "https://api-zcash.flypool.org/poolStats",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -57,30 +55,22 @@ class MinerhistoryController extends Controller
         $response = json_decode($response, true);
         $response = ArrayHelper::toArray($response);
         $array = ArrayHelper::getValue($response,'data');
-
-        foreach ($array as $history){
-            $time = ArrayHelper::getValue($history,'time');
+        $array = ArrayHelper::getValue($array,'minedBlocks');
+        foreach ($array as $block){
+            $time = ArrayHelper::getValue($block, 'time');
             $time = date('Y-m-d H:i:s', $time);
-            $find = Minerhistory::find()->where(['time' => $time])->exists();
+            $blockNumber = ArrayHelper::getValue($block, 'number');
+            $find = Poolstats::find()->where(['block_number' => $blockNumber ])->exists();
 
-            if ($find == null){
-                $model = new Minerhistory();
-
+            if ($find == false){
+                $model = new Poolstats();
                 $model->time = $time;
-                $hashRate = ArrayHelper::getValue($history,'currentHashrate');
-                $model->current_hashrate = (int)$hashRate;
-                $model->valid_shares = ArrayHelper::getValue($history,'validShares');
-                $model->invalid_shares = ArrayHelper::getValue($history,'invalidShares');
-                $model->stale_shares = ArrayHelper::getValue($history,'staleShares');
-                $averageHashrate = ArrayHelper::getValue($history,'averageHashrate');
-                $model->average_hashrate = (int)$averageHashrate;
-                $model->active_workers = ArrayHelper::getValue($history,'activeWorkers');
+                $model->block_number = $blockNumber;
+                $model->miner = ArrayHelper::getValue($block, 'miner');
                 $model->save();
-
             }
         }
-
-        $searchModel = new MinerhistorySearch();
+        $searchModel = new PoolstatsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -90,7 +80,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Displays a single Minerhistory model.
+     * Displays a single Poolstats model.
      * @param integer $id
      * @return mixed
      */
@@ -102,16 +92,16 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Creates a new Minerhistory model.
+     * Creates a new Poolstats model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Minerhistory();
+        $model = new Poolstats();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->block_number]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -120,7 +110,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Updates an existing Minerhistory model.
+     * Updates an existing Poolstats model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -130,7 +120,7 @@ class MinerhistoryController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->block_number]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -139,7 +129,7 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Deletes an existing Minerhistory model.
+     * Deletes an existing Poolstats model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -152,15 +142,15 @@ class MinerhistoryController extends Controller
     }
 
     /**
-     * Finds the Minerhistory model based on its primary key value.
+     * Finds the Poolstats model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Minerhistory the loaded model
+     * @return Poolstats the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Minerhistory::findOne($id)) !== null) {
+        if (($model = Poolstats::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

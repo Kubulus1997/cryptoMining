@@ -1,16 +1,16 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Minerhistory;
+use common\models\Transactions;
 
 /**
- * MinerhistorySearch represents the model behind the search form about `\frontend\models\Minerhistory`.
+ * TransactionsSearch represents the model behind the search form about `common\models\Transactions`.
  */
-class MinerhistorySearch extends Minerhistory
+class TransactionsSearch extends Transactions
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class MinerhistorySearch extends Minerhistory
     public function rules()
     {
         return [
-            [['id', 'current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'average_hashrate', 'active_workers'], 'integer'],
-            [['time'], 'safe'],
+            [['id', 'block_number', 'user_id', 'current_hashrate', 'amount', 'address', 'gpu_id'], 'integer'],
+            [['time', 'type', 'tx_hash'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class MinerhistorySearch extends Minerhistory
      */
     public function search($params)
     {
-        $query = Minerhistory::find();
+        $query = Transactions::find();
 
         // add conditions that should always apply here
 
@@ -61,13 +61,16 @@ class MinerhistorySearch extends Minerhistory
         $query->andFilterWhere([
             'id' => $this->id,
             'time' => $this->time,
+            'block_number' => $this->block_number,
+            'user_id' => $this->user_id,
             'current_hashrate' => $this->current_hashrate,
-            'valid_shares' => $this->valid_shares,
-            'invalid_shares' => $this->invalid_shares,
-            'stale_shares' => $this->stale_shares,
-            'average_hashrate' => $this->average_hashrate,
-            'active_workers' => $this->active_workers,
+            'amount' => $this->amount,
+            'address' => $this->address,
+            'gpu_id' => $this->gpu_id,
         ]);
+
+        $query->andFilterWhere(['like', 'type', $this->type])
+            ->andFilterWhere(['like', 'tx_hash', $this->tx_hash]);
 
         return $dataProvider;
     }

@@ -16,10 +16,8 @@ use Yii;
  * @property integer $stale_shares
  * @property integer $gpu_id
  * @property integer $id
- *
- * @property Gpu $gpu
  */
-class workerhistory extends \yii\db\ActiveRecord
+class Workerhistory extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -38,7 +36,6 @@ class workerhistory extends \yii\db\ActiveRecord
             [['last_seen', 'reported_hashrate', 'average_hashrate', 'current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'gpu_id'], 'required'],
             [['last_seen'], 'safe'],
             [['reported_hashrate', 'average_hashrate', 'current_hashrate', 'valid_shares', 'invalid_shares', 'stale_shares', 'gpu_id'], 'integer'],
-            [['gpu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gpu::className(), 'targetAttribute' => ['gpu_id' => 'id']],
         ];
     }
 
@@ -61,19 +58,11 @@ class workerhistory extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getGpu()
-    {
-        return $this->hasOne(Gpu::className(), ['id' => 'gpu_id']);
-    }
-
-    /**
      * @inheritdoc
-     * @return MinerhistoryQuery the active query used by this AR class.
+     * @return WorkerhistoryQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new MinerhistoryQuery(get_called_class());
+        return new WorkerhistoryQuery(get_called_class());
     }
 }
